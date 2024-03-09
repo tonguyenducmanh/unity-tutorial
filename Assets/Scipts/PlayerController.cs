@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,13 +37,22 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region declare
+    #region declear unity using
 
     /// <summary>
     /// tốc độ di chuyển của người chơi
     /// </summary>
     public float moveSpeed;
 
+    /// <summary>
+    /// các object mà người chơi không được phép đi qua
+    /// ( vật cản trong game , để public cho object trong project unity trỏ tơis)
+    /// </summary>
+    public LayerMask solidObjectsLayer;
+
+    #endregion
+
+    #region declare private using
     /// <summary>
     /// người chơi có đang di chuyển không
     /// </summary>
@@ -102,12 +112,33 @@ public class PlayerController : MonoBehaviour
                 targetPosition.x += input.x;
                 targetPosition.y += input.y;
 
-                StartCoroutine(Move(targetPosition));
+                // kiểm tra xem có chuẩn bị đi vào vị trí có vật cản không
+                // nếu có thì dừng lại <> không có thì đi vào
+                if(isWalkable(targetPosition))
+                {
+                    StartCoroutine(Move(targetPosition));
+                }
             }
         }
 
         // cập nhật trạng thái có đang di chuyển không cho người chơi
         animator.SetBool(_characterIsMoving, isMoving);
+    }
+
+    /// <summary>
+    /// kiểm tra xem có được phép đi vào vị trí hiện tại không
+    /// </summary>
+    /// <param name="targetPosition">vị trí cần kiểm tra</param>
+    /// <returns></returns>
+    private bool isWalkable(Vector3 targetPosition)
+    {
+        bool result = true;
+        // kiểm tra xem vị trí hiện tại có chạm vật thể có tên là solidObjectsLayer không
+        if (Physics2D.OverlapCircle(targetPosition, 0.2f, solidObjectsLayer) != null)
+        {
+            result = false;
+        }
+        return result;
     }
 
     /// <summary>
