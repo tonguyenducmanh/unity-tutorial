@@ -9,3 +9,6 @@ Trong thư mục Assets/Script sẽ chứa các logic code điều khiển nhân
 Nhân vật cũng bị chặn khi gặp vật cản ( chưa bao gồm bức tường ).
 
 ![Ảnh demo](Demo/Demo.png)
+
+Khi Gặp NPC ấn Z để xem hội thoại
+![alt text](Demo/Dialog.png)
