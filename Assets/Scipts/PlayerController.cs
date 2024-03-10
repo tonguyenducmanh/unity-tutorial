@@ -11,12 +11,12 @@ public class PlayerController : MonoBehaviour
     /// chiều ngang
     /// </summary>
     private const string _horizontal = "Horizontal";
-    
+
     /// <summary>
     /// chiều dọc
     /// </summary>
     private const string _vertical = "Vertical";
-    
+
     /// <summary>
     /// di chuyển x
     /// </summary>
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     /// ( vật cản trong game , để public cho object trong project unity trỏ tơis)
     /// </summary>
     public LayerMask solidObjectsLayer;
-    
+
     /// <summary>
     /// các object mà người chơi có thể tương tác được
     /// </summary>
@@ -89,21 +89,21 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// luôn update theo từng frame
     /// </summary>
-    private void Update()
+    public void HandleUpdate()
     {
-        if(!isMoving)
+        if (!isMoving)
         {
             // lấy ra tọa độ di chuyển dựa vào phím mà người dùng nhập
             input.x = Input.GetAxisRaw(_horizontal);
             input.y = Input.GetAxisRaw(_vertical);
 
             // chặn việc di chuyển chéo, tại 1 thời điểm chỉ có thể sang ngang hoặc dọc
-            if(input.x != 0 )
+            if (input.x != 0)
             {
                 input.y = 0;
             }
 
-            if(input != Vector2.zero)
+            if (input != Vector2.zero)
             {
                 // dựa vào tham số người dùng nhập mà set animation hợp lý
                 // cấu hình blend tree idle của player trong unity tab animator sẽ dựa vào 2 tham số moveX và moveY này để quyết định di chuyển
@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
 
                 // kiểm tra xem có chuẩn bị đi vào vị trí có vật cản không
                 // nếu có thì dừng lại <> không có thì đi vào
-                if(isWalkable(targetPosition))
+                if (IsWalkable(targetPosition))
                 {
                     StartCoroutine(Move(targetPosition));
                 }
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool(_characterIsMoving, isMoving);
 
         // lắng nghe phím z để tương tác với người chơi
-        if(Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             Interact();
         }
@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviour
         Collider2D collider = Physics2D.OverlapCircle(interactPos, 0.2f, interactableLayer);
 
         // nếu tìm thấy đối tượng tương tác
-        if(collider != null)
+        if (collider != null)
         {
             // kiểm tra xem đối tượng tương tác này có đang chứa script
             // trong script đó kế thừa Ineractable interface không
@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="targetPosition">vị trí cần kiểm tra</param>
     /// <returns></returns>
-    private bool isWalkable(Vector3 targetPosition)
+    private bool IsWalkable(Vector3 targetPosition)
     {
         bool result = true;
         // kiểm tra xem vị trí hiện tại có chạm vật thể có tên là solidObjectsLayer không
@@ -186,12 +186,12 @@ public class PlayerController : MonoBehaviour
     {
         isMoving = true;
 
-        while((targetPosition - transform.position).sqrMagnitude > Mathf.Epsilon)
+        while ((targetPosition - transform.position).sqrMagnitude > Mathf.Epsilon)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
             yield return null;
         }
-        
+
         transform.position = targetPosition;
 
         isMoving = false;

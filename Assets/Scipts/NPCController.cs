@@ -5,10 +5,14 @@ using UnityEngine;
 public class NPCController : MonoBehaviour, Interactable
 {
     /// <summary>
+    /// nội dung sẽ được truyền từ ngoài vào để hiển thị
+    /// </summary>
+    [SerializeField] Dialog dialog;
+    /// <summary>
     /// hàm xử lý việc tương tác của người chơi với NPC
     /// </summary>
     public void Interact()
     {
-        Debug.Log("You will talk to this NPC");
+       StartCoroutine(DialogManager.Instance.ShowDialog(dialog));
     }
 }
