@@ -61,6 +61,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scipts\PlayerController.cs" />
+    <Compile Include="Assets\Scipts\Interactable.cs" />
+    <Compile Include="Assets\Scipts\NPCController.cs" />
+    <Compile Include="Assets\Scipts\ChanllengerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -49,7 +49,11 @@ public class PlayerController : MonoBehaviour
     /// ( vật cản trong game , để public cho object trong project unity trỏ tơis)
     /// </summary>
     public LayerMask solidObjectsLayer;
-
+    
+    /// <summary>
+    /// các object mà người chơi có thể tương tác được
+    /// </summary>
+    public LayerMask interactableLayer;
     #endregion
 
     #region declare private using
@@ -123,6 +127,38 @@ public class PlayerController : MonoBehaviour
 
         // cập nhật trạng thái có đang di chuyển không cho người chơi
         animator.SetBool(_characterIsMoving, isMoving);
+
+        // lắng nghe phím z để tương tác với người chơi
+        if(Input.GetKeyDown(KeyCode.Z))
+        {
+            Interact();
+        }
+    }
+
+    /// <summary>
+    /// hàm xử lý việc tương tác của người chơi
+    /// </summary>
+    private void Interact()
+    {
+        // lấy ra tọa độ di chuyển tiếp theo của người chơi
+        Vector3 facingDir = new Vector3(animator.GetFloat(_characterMoveX), animator.GetFloat(_characterMoveY));
+
+        // lấy ra tọa độ của vật thể muốn tương tác
+        Vector3 interactPos = transform.position + facingDir;
+
+        // thêm dòng debug lúc chạy để xem 2 điểm này nối với nhau nó sẽ như thế nào
+        //Debug.DrawLine(transform.position, interactPos, Color.red, 1f);
+
+        Collider2D collider = Physics2D.OverlapCircle(interactPos, 0.2f, interactableLayer);
+
+        // nếu tìm thấy đối tượng tương tác
+        if(collider != null)
+        {
+            // kiểm tra xem đối tượng tương tác này có đang chứa script
+            // trong script đó kế thừa Ineractable interface không
+            // nếu có thì gọi hàm Interact()
+            collider.GetComponent<Interactable>()?.Interact();
+        }
     }
 
     /// <summary>
@@ -134,7 +170,7 @@ public class PlayerController : MonoBehaviour
     {
         bool result = true;
         // kiểm tra xem vị trí hiện tại có chạm vật thể có tên là solidObjectsLayer không
-        if (Physics2D.OverlapCircle(targetPosition, 0.2f, solidObjectsLayer) != null)
+        if (Physics2D.OverlapCircle(targetPosition, 0.2f, solidObjectsLayer | interactableLayer) != null)
         {
             result = false;
         }
